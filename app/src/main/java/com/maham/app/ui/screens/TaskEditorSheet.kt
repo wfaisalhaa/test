@@ -28,7 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +57,11 @@ import com.maham.app.R
 import com.maham.app.data.Category
 import com.maham.app.data.Task
 import com.maham.app.data.TaskColors
+import com.maham.app.ui.components.NgChip
+import com.maham.app.ui.components.taskColor
+import com.maham.app.ui.theme.Gold
+import com.maham.app.ui.theme.Navy
+import com.maham.app.ui.theme.Ng
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -85,12 +90,12 @@ fun TaskEditorSheet(
     var dueMinute by remember { mutableStateOf(task?.dueMinute) }
     var reminder by remember { mutableStateOf(task?.reminder ?: false) }
     var important by remember { mutableStateOf(task?.important ?: false) }
-    var color by remember { mutableStateOf(task?.color ?: TaskColors.palette[0]) }
+    var color by remember { mutableStateOf(task?.color ?: TaskColors.NAVY) }
 
     var showDate by remember { mutableStateOf(false) }
     var showTime by remember { mutableStateOf(false) }
 
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = Ng.tokens.panel) {
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
@@ -118,14 +123,14 @@ fun TaskEditorSheet(
                 value = title, onValueChange = { title = it },
                 placeholder = { Text(stringResource(R.string.task_title_hint)) },
                 modifier = Modifier.fillMaxWidth(), singleLine = true,
-                shape = MaterialTheme.shapes.medium,
+                shape = MaterialTheme.shapes.small,
                 leadingIcon = leading
             )
             OutlinedTextField(
                 value = note, onValueChange = { note = it },
                 placeholder = { Text(stringResource(R.string.task_note_hint)) },
                 modifier = Modifier.fillMaxWidth(), minLines = 2,
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.small
             )
 
             // Emoji picker
@@ -139,7 +144,8 @@ fun TaskEditorSheet(
                         Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(if (emoji == e) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant)
+                            .background(if (emoji == e) Ng.tokens.goldSoft else Ng.tokens.neutralSoft)
+                            .border(1.dp, if (emoji == e) Ng.tokens.goldLine else Ng.tokens.line, CircleShape)
                             .clickable { emoji = e },
                         contentAlignment = Alignment.Center
                     ) { Text(if (e.isEmpty()) "–" else e) }
@@ -181,14 +187,15 @@ fun TaskEditorSheet(
             Label(R.string.task_color)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 TaskColors.palette.forEach { c ->
+                    val resolved = taskColor(c)
                     Box(
                         Modifier
                             .size(32.dp)
                             .clip(CircleShape)
-                            .background(Color(c))
+                            .background(resolved)
                             .border(
-                                width = if (color == c) 3.dp else 0.dp,
-                                color = if (color == c) MaterialTheme.colorScheme.onSurface else Color.Transparent,
+                                width = if (color == c) 2.dp else 0.dp,
+                                color = if (color == c) Ng.tokens.ink else Color.Transparent,
                                 shape = CircleShape
                             )
                             .clickable { color = c },
@@ -221,9 +228,10 @@ fun TaskEditorSheet(
                     )
                 },
                 enabled = title.isNotBlank(),
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                shape = MaterialTheme.shapes.medium
-            ) { Text(stringResource(R.string.save), style = MaterialTheme.typography.titleMedium) }
+                modifier = Modifier.fillMaxWidth().height(46.dp),
+                shape = MaterialTheme.shapes.small,
+                colors = ButtonDefaults.buttonColors(containerColor = Gold, contentColor = Navy)
+            ) { Text(stringResource(R.string.save), style = MaterialTheme.typography.titleSmall) }
         }
     }
 
@@ -259,8 +267,8 @@ fun TaskEditorSheet(
         Dialog(onDismissRequest = { showTime = false }) {
             Column(
                 Modifier
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .background(MaterialTheme.colorScheme.surface)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(Ng.tokens.panel)
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -281,13 +289,12 @@ fun TaskEditorSheet(
 
 @Composable
 private fun Label(res: Int) {
-    Text(stringResource(res), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Text(stringResource(res), style = MaterialTheme.typography.labelMedium, color = Ng.tokens.muted)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CategoryChip(res: Int, selected: Boolean, onClick: () -> Unit) {
-    FilterChip(selected = selected, onClick = onClick, label = { Text(stringResource(res)) }, shape = MaterialTheme.shapes.large)
+    NgChip(text = stringResource(res), selected = selected, onClick = onClick)
 }
 
 @Composable
@@ -295,7 +302,7 @@ private fun ToggleRow(res: Int, checked: Boolean, enabled: Boolean = true, onCha
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(
             stringResource(res), modifier = Modifier.weight(1f),
-            color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline
+            color = if (enabled) Ng.tokens.ink else Ng.tokens.lineStrong
         )
         Switch(checked = checked && enabled, onCheckedChange = onChange, enabled = enabled)
     }

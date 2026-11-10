@@ -7,16 +7,23 @@ import androidx.room.PrimaryKey
 
 enum class Category { PERSONAL, WORK, LIST }
 
-/** Task colors shown as the side stripe on each card. */
+/**
+ * Task "state colors" from the design system, stored as an index so the
+ * actual color resolves per theme (light/dark) at render time.
+ * 0 navy (default) · 1 gold (ready) · 2 live green · 3 tint blue · 4 danger
+ */
 object TaskColors {
-    val palette = listOf(
-        0xFF4F7CF2.toInt(), // blue
-        0xFFF26B8A.toInt(), // pink/red
-        0xFFF2B33D.toInt(), // amber
-        0xFF8B6CF2.toInt(), // purple
-        0xFF3DBF8A.toInt(), // green
-        0xFF7FC4E8.toInt(), // light blue
-    )
+    const val NAVY = 0
+    const val GOLD = 1
+    const val LIVE = 2
+    const val TINT = 3
+    const val DANGER = 4
+    val palette = listOf(NAVY, GOLD, LIVE, TINT, DANGER)
+}
+
+/** Checklist panel tints, also stored as an index: 0 panel · 1 gold-soft · 2 live-soft · 3 tint · 4 neutral-soft · 5 danger-soft */
+object ListColors {
+    val palette = listOf(0, 1, 2, 3, 4, 5)
 }
 
 @Entity(tableName = "tasks")
@@ -32,7 +39,7 @@ data class Task(
     val dueMinute: Int? = null,
     val reminder: Boolean = false,
     val important: Boolean = false,
-    val color: Int = TaskColors.palette[0],
+    val color: Int = TaskColors.NAVY,
     val done: Boolean = false,
     /** Epoch millis when completed */
     val completedAt: Long? = null,
@@ -43,8 +50,8 @@ data class Task(
 data class CheckList(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
-    val icon: String = "📝",
-    val color: Int = 0xFFE3ECFF.toInt(),
+    val icon: String = "list",
+    val color: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
 )
 

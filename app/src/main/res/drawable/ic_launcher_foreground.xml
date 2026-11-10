@@ -4,40 +4,30 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- check circle -->
+    <!-- Gold line-icon checklist on navy: 1.7-weight strokes, round caps -->
     <path
-        android:fillColor="#7B8CF5"
-        android:pathData="M36,36 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
-    <path
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="2.2"
+        android:strokeColor="#C6A15B"
+        android:strokeWidth="4.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:fillColor="#00000000"
-        android:pathData="M32.5,36.2 L35,38.6 L39.8,33.6" />
-    <!-- lines -->
+        android:pathData="M31,38 L36,43 L45,33" />
     <path
-        android:strokeColor="#7B8CF5"
-        android:strokeWidth="5"
+        android:strokeColor="#C6A15B"
+        android:strokeWidth="4.5"
         android:strokeLineCap="round"
         android:fillColor="#00000000"
-        android:pathData="M48,36 L76,36" />
+        android:pathData="M53,38 L77,38" />
     <path
-        android:fillColor="#F2A8C8"
-        android:pathData="M36,54 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
-    <path
-        android:strokeColor="#F2A8C8"
-        android:strokeWidth="5"
+        android:strokeColor="#C9D5E4"
+        android:strokeWidth="4.5"
         android:strokeLineCap="round"
         android:fillColor="#00000000"
-        android:pathData="M48,54 L76,54" />
+        android:pathData="M38,56 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M53,56 L77,56" />
     <path
-        android:fillColor="#7B8CF5"
-        android:pathData="M36,72 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
-    <path
-        android:strokeColor="#7B8CF5"
-        android:strokeWidth="5"
+        android:strokeColor="#C9D5E4"
+        android:strokeWidth="4.5"
         android:strokeLineCap="round"
         android:fillColor="#00000000"
-        android:pathData="M48,72 L68,72" />
+        android:pathData="M38,74 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M53,74 L69,74" />
 </vector>

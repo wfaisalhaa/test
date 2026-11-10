@@ -24,7 +24,8 @@
         android:maxLines="1"
         android:paddingHorizontal="6dp"
         android:textColor="@color/widget_text"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:fontFamily="@font/plex_arabic_regular" />
 
     <TextView
         android:id="@+id/item_time"

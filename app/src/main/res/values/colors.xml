@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#F3F6FC</color>
-    <color name="primary">#4F7CF2</color>
-    <color name="ic_launcher_background">#FFFFFF</color>
-    <color name="widget_bg">#F2FFFFFF</color>
-    <color name="widget_text">#1F2937</color>
-    <color name="widget_time">#9CA3AF</color>
+    <!-- نظام الكحلي والذهبي -->
+    <color name="navy">#071A33</color>
+    <color name="navy_deep">#061428</color>
+    <color name="gold">#C6A15B</color>
+    <color name="background">#F5F7FB</color>
+    <color name="primary">#123A6B</color>
+    <color name="ic_launcher_background">#071A33</color>
+    <color name="widget_bg">#FFFFFF</color>
+    <color name="widget_line">#E2E8F0</color>
+    <color name="widget_text">#13243B</color>
+    <color name="widget_time">#5F6D7C</color>
+    <color name="widget_accent">#8D6828</color>
 </resources>

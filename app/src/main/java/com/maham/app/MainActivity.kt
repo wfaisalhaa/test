@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.FactCheck
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -44,7 +45,13 @@ import com.maham.app.ui.screens.ListsScreen
 import com.maham.app.ui.screens.ProfileScreen
 import com.maham.app.ui.screens.TaskEditorSheet
 import com.maham.app.ui.screens.TasksScreen
+import com.maham.app.ui.theme.Gold
+import com.maham.app.ui.theme.GoldWash
 import com.maham.app.ui.theme.MahamTheme
+import com.maham.app.ui.theme.Navy
+import com.maham.app.ui.theme.OnNavy2
+import com.maham.app.ui.theme.OnNavyMuted
+import androidx.compose.ui.unit.dp
 import com.maham.app.widget.TodayWidgetProvider
 
 enum class Tab(val labelRes: Int, val icon: ImageVector) {
@@ -117,15 +124,20 @@ fun MahamApp(vm: MainViewModel, launchIntent: Intent?, onIntentHandled: () -> Un
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+            // Navy ground with a gold current item, as the design's header/footer.
+            NavigationBar(containerColor = Navy, contentColor = OnNavy2) {
                 Tab.entries.forEach { t ->
                     NavigationBarItem(
                         selected = tab == t,
                         onClick = { tab = t },
                         icon = { Icon(t.icon, contentDescription = null) },
-                        label = { Text(stringResource(t.labelRes)) },
+                        label = { Text(stringResource(t.labelRes), style = MaterialTheme.typography.labelMedium) },
                         colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                            selectedIconColor = Gold,
+                            selectedTextColor = Gold,
+                            indicatorColor = GoldWash,
+                            unselectedIconColor = OnNavyMuted,
+                            unselectedTextColor = OnNavyMuted
                         )
                     )
                 }
@@ -135,8 +147,10 @@ fun MahamApp(vm: MainViewModel, launchIntent: Intent?, onIntentHandled: () -> Un
             if (tab == Tab.TASKS || tab == Tab.CALENDAR) {
                 FloatingActionButton(
                     onClick = { openEditor(null) },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = Gold,
+                    contentColor = Navy,
+                    shape = MaterialTheme.shapes.small,
+                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp)
                 ) { Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_task)) }
             }
         }

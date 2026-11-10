@@ -21,7 +21,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,7 +37,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maham.app.R
 import com.maham.app.data.Task
+import com.maham.app.ui.components.NgPanel
 import com.maham.app.ui.components.TaskCard
+import com.maham.app.ui.components.taskColor
+import com.maham.app.ui.theme.Ng
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -60,6 +62,7 @@ fun CalendarScreen(
 
     val byDay = remember(tasks) { tasks.filter { it.dueDay != null }.groupBy { it.dueDay!! } }
     val selectedTasks = byDay[selected.toEpochDay()].orEmpty()
+    val t = Ng.tokens
 
     LazyColumn(
         modifier.fillMaxSize(),
@@ -67,8 +70,8 @@ fun CalendarScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item {
-            Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surface, shadowElevation = 2.dp) {
-                Column(Modifier.padding(12.dp)) {
+            NgPanel(padding = PaddingValues(12.dp)) {
+                Column {
                     // Month header
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = { month = month.minusMonths(1) }) {
@@ -76,7 +79,7 @@ fun CalendarScreen(
                         }
                         Text(
                             "${month.month.getDisplayName(TextStyle.FULL, Locale.getDefault())}، ${month.year}",
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center
                         )
@@ -93,8 +96,8 @@ fun CalendarScreen(
                                 d.getDisplayName(TextStyle.NARROW, Locale.getDefault()),
                                 modifier = Modifier.weight(1f),
                                 textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                style = MaterialTheme.typography.labelMedium,
+                                color = t.muted
                             )
                         }
                     }
@@ -130,7 +133,7 @@ fun CalendarScreen(
         item {
             Text(
                 "${selected.dayOfMonth} ${selected.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} · ${selectedTasks.size}",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(top = 6.dp)
             )
         }
@@ -138,7 +141,7 @@ fun CalendarScreen(
             item {
                 Text(
                     stringResource(R.string.empty_tasks),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = t.muted,
                     modifier = Modifier.fillMaxWidth().padding(24.dp),
                     textAlign = TextAlign.Center
                 )
@@ -152,18 +155,19 @@ fun CalendarScreen(
 
 @Composable
 private fun DayCell(date: LocalDate, isToday: Boolean, isSelected: Boolean, dayTasks: List<Task>, onClick: () -> Unit) {
+    val t = Ng.tokens
     val pending = dayTasks.filter { !it.done }
-    val ringColor = pending.firstOrNull()?.let { Color(it.color) }
+    val ringColor = pending.firstOrNull()?.let { taskColor(it.color) }
     val emoji = pending.firstOrNull { it.emoji.isNotBlank() }?.emoji
 
     Box(
         Modifier
             .fillMaxSize()
             .clip(CircleShape)
-            .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
+            .background(if (isSelected) t.selected else Color.Transparent)
             .then(
                 if (!isSelected && ringColor != null) Modifier.border(2.dp, ringColor, CircleShape)
-                else if (!isSelected && isToday) Modifier.border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                else if (!isSelected && isToday) Modifier.border(1.dp, t.goldInk, CircleShape)
                 else Modifier
             )
             .clickable(onClick = onClick),
@@ -174,10 +178,11 @@ private fun DayCell(date: LocalDate, isToday: Boolean, isSelected: Boolean, dayT
         } else {
             Text(
                 date.dayOfMonth.toString(),
+                style = MaterialTheme.typography.bodyMedium,
                 color = when {
-                    isSelected -> MaterialTheme.colorScheme.onPrimary
+                    isSelected -> t.onSelected
                     ringColor != null -> ringColor
-                    else -> MaterialTheme.colorScheme.onSurface
+                    else -> t.ink
                 },
                 fontWeight = if (isToday || isSelected) FontWeight.Bold else FontWeight.Normal
             )

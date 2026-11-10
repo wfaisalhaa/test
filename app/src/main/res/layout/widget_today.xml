@@ -21,7 +21,8 @@
             android:text="@string/widget_title"
             android:textColor="@color/widget_text"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/noto_kufi_arabic" />
 
         <ImageButton
             android:id="@+id/widget_add"
@@ -30,7 +31,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/add_task"
             android:src="@android:drawable/ic_input_add"
-            android:tint="@color/widget_text" />
+            android:tint="@color/widget_accent" />
     </LinearLayout>
 
     <ListView

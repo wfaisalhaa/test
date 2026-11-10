@@ -1,5 +1,6 @@
 package com.maham.app.ui.screens
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,12 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -33,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.maham.app.R
 import com.maham.app.data.Category
 import com.maham.app.data.Task
+import com.maham.app.ui.components.NgChip
 import com.maham.app.ui.components.TaskCard
+import com.maham.app.ui.theme.Ng
 import java.time.LocalDate
 
 private enum class Filter(val labelRes: Int, val category: Category?) {
@@ -43,7 +44,6 @@ private enum class Filter(val labelRes: Int, val category: Category?) {
     LIST(R.string.filter_list, Category.LIST)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksScreen(
     modifier: Modifier = Modifier,
@@ -67,23 +67,11 @@ fun TasksScreen(
             Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Filter.entries.forEach { f ->
-                FilterChip(
-                    selected = filter == f,
-                    onClick = { filter = f },
-                    label = { Text(stringResource(f.labelRes)) },
-                    shape = MaterialTheme.shapes.large,
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
-                    border = null
-                )
+                NgChip(text = stringResource(f.labelRes), selected = filter == f) { filter = f }
             }
         }
 
@@ -92,27 +80,26 @@ fun TasksScreen(
                 Text(
                     stringResource(R.string.empty_tasks),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Ng.tokens.muted,
                     textAlign = TextAlign.Center
                 )
             }
-            return
-        }
-
-        LazyColumn(
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 96.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            section(R.string.section_overdue, overdue, onToggle, onStar, onOpen, onDelete)
-            section(R.string.section_today, todayTasks, onToggle, onStar, onOpen, onDelete)
-            section(R.string.section_other, other, onToggle, onStar, onOpen, onDelete)
-            section(R.string.section_done, done, onToggle, onStar, onOpen, onDelete)
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 96.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                section(R.string.section_overdue, overdue, onToggle, onStar, onOpen, onDelete)
+                section(R.string.section_today, todayTasks, onToggle, onStar, onOpen, onDelete)
+                section(R.string.section_other, other, onToggle, onStar, onOpen, onDelete)
+                section(R.string.section_done, done, onToggle, onStar, onOpen, onDelete)
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun androidx.compose.foundation.lazy.LazyListScope.section(
+private fun LazyListScope.section(
     titleRes: Int,
     list: List<Task>,
     onToggle: (Task, Boolean) -> Unit,
@@ -124,8 +111,8 @@ private fun androidx.compose.foundation.lazy.LazyListScope.section(
     item(key = "header_$titleRes") {
         Text(
             text = "${stringResource(titleRes)} (${list.size})",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 8.dp, bottom = 2.dp)
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(top = 10.dp, bottom = 2.dp)
         )
     }
     items(list, key = { it.id }) { task ->
