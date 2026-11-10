@@ -5,6 +5,9 @@ on:
     branches: [ maham-app ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,3 +32,11 @@ jobs:
         with:
           name: Maham-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Publish release with APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk Maham.apk
+          TAG="apk-${GITHUB_RUN_NUMBER}"
+          gh release create "$TAG" Maham.apk --title "Maham APK #${GITHUB_RUN_NUMBER}" --notes "تطبيق مهام — نسخة تجريبية (debug). حمّل Maham.apk وثبّته." --latest
