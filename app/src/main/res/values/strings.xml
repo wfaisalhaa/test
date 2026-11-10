@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">مهام</string>
+    <string name="widget_label">مهام اليوم</string>
+    <string name="widget_title">اليوم</string>
+    <string name="widget_empty">لا توجد مهام اليوم 🎉</string>
+
+    <string name="nav_tasks">مهام</string>
+    <string name="nav_lists">قوائم</string>
+    <string name="nav_calendar">الرزنامة</string>
+    <string name="nav_profile">خاصتي</string>
+
+    <string name="filter_all">الكل</string>
+    <string name="filter_personal">شخصي</string>
+    <string name="filter_work">عمل</string>
+    <string name="filter_list">قائمة</string>
+
+    <string name="section_today">اليوم</string>
+    <string name="section_other">آخر</string>
+    <string name="section_done">مكتملة</string>
+    <string name="section_overdue">متأخرة</string>
+    <string name="empty_tasks">لا توجد مهام بعد. اضغط + لإضافة مهمة</string>
+
+    <string name="add_task">إضافة مهمة</string>
+    <string name="edit_task">تعديل المهمة</string>
+    <string name="task_title_hint">ما الذي تريد إنجازه؟</string>
+    <string name="task_note_hint">ملاحظة (اختياري)</string>
+    <string name="task_date">التاريخ</string>
+    <string name="task_time">الوقت</string>
+    <string name="task_category">الفئة</string>
+    <string name="task_color">اللون</string>
+    <string name="task_reminder">تذكير</string>
+    <string name="task_important">مهم</string>
+    <string name="task_emoji">رمز</string>
+    <string name="save">حفظ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="delete">حذف</string>
+    <string name="rename">إعادة تسمية</string>
+    <string name="no_date">بدون تاريخ</string>
+    <string name="no_time">بدون وقت</string>
+
+    <string name="lists_title">قائمة مراجعة غير محدودة</string>
+    <string name="add_list">قائمة جديدة</string>
+    <string name="list_name_hint">اسم القائمة</string>
+    <string name="list_item_hint">عنصر جديد…</string>
+    <string name="list_icon">الأيقونة</string>
+    <string name="empty_lists">أنشئ قائمتك الأولى: دراسة، تسوق، أفلام…</string>
+
+    <string name="stats_title">تتبع المهام</string>
+    <string name="stats_overview">نظرة عامة على المهام</string>
+    <string name="stats_completed">المهام المكتملة</string>
+    <string name="stats_pending">المهام العالقة</string>
+    <string name="stats_daily">إنجاز المهمة اليومية</string>
+    <string name="stats_next7">المهام في 7 أيام القادمة</string>
+    <string name="stats_streak">حافظ على الخطة لمدة %1$d يوم</string>
+    <string name="stats_none_next7">لا مهام في الأسبوع القادم</string>
+
+    <string name="notification_channel">تذكير المهام</string>
+    <string name="notification_title">تذكير المهمة</string>
+    <string name="notification_done">تم</string>
+    <string name="notification_ok">حسنًا</string>
+
+    <string name="settings">تنظيمات</string>
+    <string name="settings_first_day">أول يوم في الأسبوع</string>
+    <string name="settings_notifications">التنبيهات والتذكير</string>
+    <string name="settings_theme">المظهر</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_about">حول</string>
+    <string name="settings_version">الإصدار 1.0</string>
+</resources>
