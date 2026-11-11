@@ -52,7 +52,7 @@
     <string name="stats_pending">Pending</string>
     <string name="stats_daily">Daily completion</string>
     <string name="stats_next7">Tasks in the next 7 days</string>
-    <string name="stats_streak">On track for %1$d days</string>
+    <string name="stats_streak">On track for %1$s days</string>
     <string name="stats_none_next7">Nothing scheduled next week</string>
 
     <string name="notification_channel">Task reminders</string>

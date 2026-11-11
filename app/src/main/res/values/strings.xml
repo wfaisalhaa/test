@@ -52,7 +52,7 @@
     <string name="stats_pending">المهام العالقة</string>
     <string name="stats_daily">إنجاز المهمة اليومية</string>
     <string name="stats_next7">المهام في 7 أيام القادمة</string>
-    <string name="stats_streak">حافظ على الخطة لمدة %1$d يوم</string>
+    <string name="stats_streak">حافظ على الخطة لمدة %1$s يوم</string>
     <string name="stats_none_next7">لا مهام في الأسبوع القادم</string>
 
     <string name="notification_channel">تذكير المهام</string>

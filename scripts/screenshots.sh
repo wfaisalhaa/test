@@ -8,7 +8,15 @@ mkdir -p "$OUT"
 shot() { sleep "$2"; adb exec-out screencap -p > "$OUT/$1.png"; echo "captured $1"; }
 open() { adb shell am start -W --activity-single-top -n "$A" "$@" >/dev/null; }
 
+# Switch the emulator itself to Arabic (needs a rooted image, e.g. google_apis).
+adb root >/dev/null 2>&1 || true; sleep 3
+adb shell setprop persist.sys.locale ar-SA
 adb shell settings put system system_locales ar-SA || true
+adb shell setprop ctl.restart zygote
+sleep 20; adb wait-for-device
+until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; do sleep 3; done
+sleep 8
+echo "locale now: $(adb shell getprop persist.sys.locale)"
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 adb shell am start -W -n "$A" --es locale ar --ez seed_demo true --ei tab 0 >/dev/null

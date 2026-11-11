@@ -123,7 +123,7 @@ fun ProfileScreen(
                     Spacer(Modifier.width(12.dp))
                     Column {
                         Text(stringResource(R.string.stats_title), style = MaterialTheme.typography.headlineSmall, color = OnNavy)
-                        Text(stringResource(R.string.stats_streak, streak), style = MaterialTheme.typography.bodyMedium, color = OnNavy2)
+                        Text(stringResource(R.string.stats_streak, streak.toString()), style = MaterialTheme.typography.bodyMedium, color = OnNavy2)
                     }
                 }
                 Spacer(Modifier.height(14.dp))
