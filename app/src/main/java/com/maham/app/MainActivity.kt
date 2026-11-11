@@ -37,7 +37,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.maham.app.data.DemoSeeder
 import com.maham.app.data.Task
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.maham.app.reminders.ReminderReceiver
 import com.maham.app.reminders.ReminderScheduler
 import com.maham.app.ui.screens.CalendarScreen
@@ -100,10 +104,26 @@ fun MahamApp(vm: MainViewModel, launchIntent: Intent?, onIntentHandled: () -> Un
     var editorOpen by rememberSaveable { mutableStateOf(false) }
     var editingTask by remember { mutableStateOf<Task?>(null) }
 
+    val context = LocalContext.current
     val tasks by vm.tasks.collectAsStateWithLifecycle()
     val lists by vm.lists.collectAsStateWithLifecycle()
     val items by vm.listItems.collectAsStateWithLifecycle()
     val settings by vm.settings.collectAsStateWithLifecycle()
+
+    // Debug-only launch extras used for screenshots/demos:
+    //   --ez seed_demo true   fill sample data
+    //   --ei tab 0..3         open a given tab
+    //   --ez dark true        switch to dark theme
+    LaunchedEffect(launchIntent) {
+        val intent = launchIntent ?: return@LaunchedEffect
+        if (!BuildConfig.DEBUG) return@LaunchedEffect
+        if (intent.getBooleanExtra("seed_demo", false)) {
+            withContext(Dispatchers.IO) { DemoSeeder.seed(context) }
+        }
+        if (intent.hasExtra("dark")) vm.setDark(intent.getBooleanExtra("dark", false))
+        val t = intent.getIntExtra("tab", -1)
+        if (t in Tab.entries.indices) tab = Tab.entries[t]
+    }
 
     // Deep links from widget / notification
     LaunchedEffect(launchIntent, tasks) {
