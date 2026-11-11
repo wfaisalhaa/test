@@ -1,6 +1,8 @@
 name: Screenshots
 
 on:
+  push:
+    branches: [ maham-app ]
   workflow_dispatch:
 
 permissions:
@@ -8,6 +10,7 @@ permissions:
 
 jobs:
   shots:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[shots]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
