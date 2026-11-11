@@ -40,29 +40,7 @@ jobs:
           profile: pixel_5
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -prop persist.sys.locale=ar-SA -prop persist.sys.language=ar -prop persist.sys.country=SA
           disable-animations: true
-          script: |
-            adb shell settings put system system_locales ar-SA || true
-            adb install -r app/build/outputs/apk/debug/app-debug.apk
-            mkdir -p shots
-            shot() { sleep "$2"; adb exec-out screencap -p > "shots/$1.png"; }
-            A="com.maham.app/.MainActivity"
-            adb shell am start -W -n $A --ez seed_demo true --ei tab 0
-            shot 01-tasks 8
-            adb shell am start -W --activity-single-top -n $A --ei tab 1
-            shot 02-lists 3
-            adb shell am start -W --activity-single-top -n $A --ei tab 2
-            shot 03-calendar 3
-            adb shell am start -W --activity-single-top -n $A --ei tab 3
-            shot 04-stats 3
-            adb shell am start -W --activity-single-top -n $A --ei tab 0 --ez open_add true
-            shot 05-add-task 3
-            adb shell input keyevent BACK; sleep 1
-            adb shell am start -W --activity-single-top -n $A --ei tab 0 --ez dark true
-            shot 06-tasks-dark 3
-            adb shell am start -W --activity-single-top -n $A --ei tab 3
-            shot 07-stats-dark 3
-            adb shell am start -W --activity-single-top -n $A --ei tab 0 --ez dark false
-            ls -la shots
+          script: bash scripts/screenshots.sh shots
 
       - name: Upload screenshots (artifact)
         uses: actions/upload-artifact@v4
