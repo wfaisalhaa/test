@@ -49,4 +49,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         if (enabled) repo.rescheduleAllReminders()
     }
     fun setDark(dark: Boolean) = viewModelScope.launch { settingsStore.setDark(dark) }
+
+    /** Debug/demo only: fill the database with sample content. */
+    fun seedDemo() = viewModelScope.launch { com.maham.app.data.DemoSeeder.seed(getApplication()) }
 }

@@ -37,11 +37,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.maham.app.data.DemoSeeder
 import com.maham.app.data.Task
 import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
+import android.content.res.Configuration
+import java.util.Locale
 import com.maham.app.reminders.ReminderReceiver
 import com.maham.app.reminders.ReminderScheduler
 import com.maham.app.ui.screens.CalendarScreen
@@ -77,9 +79,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val settings by vm.settings.collectAsStateWithLifecycle()
-            MahamTheme(dark = settings.darkTheme) {
-                NotificationPermission()
-                MahamApp(vm = vm, launchIntent = launchIntent.value) { launchIntent.value = null }
+            // Debug/demo only: `--es locale ar` forces the app's language and layout direction.
+            val forced = if (BuildConfig.DEBUG) intent?.getStringExtra("locale") else null
+            ForcedLocale(forced) {
+                MahamTheme(dark = settings.darkTheme) {
+                    NotificationPermission()
+                    MahamApp(vm = vm, launchIntent = launchIntent.value) { launchIntent.value = null }
+                }
             }
         }
     }
@@ -88,6 +94,21 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         launchIntent.value = intent
     }
+}
+
+@Composable
+private fun ForcedLocale(tag: String?, content: @Composable () -> Unit) {
+    if (tag.isNullOrBlank()) { content(); return }
+    val base = LocalContext.current
+    val locale = Locale.forLanguageTag(tag)
+    val ctx = remember(tag) {
+        val cfg = Configuration(base.resources.configuration).apply { setLocale(locale); setLayoutDirection(locale) }
+        base.createConfigurationContext(cfg)
+    }
+    val dir = if (
+        android.text.TextUtils.getLayoutDirectionFromLocale(locale) == android.view.View.LAYOUT_DIRECTION_RTL)
+        LayoutDirection.Rtl else LayoutDirection.Ltr
+    CompositionLocalProvider(LocalContext provides ctx, LocalLayoutDirection provides dir, content = content)
 }
 
 @Composable
@@ -104,7 +125,6 @@ fun MahamApp(vm: MainViewModel, launchIntent: Intent?, onIntentHandled: () -> Un
     var editorOpen by rememberSaveable { mutableStateOf(false) }
     var editingTask by remember { mutableStateOf<Task?>(null) }
 
-    val context = LocalContext.current
     val tasks by vm.tasks.collectAsStateWithLifecycle()
     val lists by vm.lists.collectAsStateWithLifecycle()
     val items by vm.listItems.collectAsStateWithLifecycle()
@@ -117,9 +137,7 @@ fun MahamApp(vm: MainViewModel, launchIntent: Intent?, onIntentHandled: () -> Un
     LaunchedEffect(launchIntent) {
         val intent = launchIntent ?: return@LaunchedEffect
         if (!BuildConfig.DEBUG) return@LaunchedEffect
-        if (intent.getBooleanExtra("seed_demo", false)) {
-            withContext(Dispatchers.IO) { DemoSeeder.seed(context) }
-        }
+        if (intent.getBooleanExtra("seed_demo", false)) vm.seedDemo()
         if (intent.hasExtra("dark")) vm.setDark(intent.getBooleanExtra("dark", false))
         val t = intent.getIntExtra("tab", -1)
         if (t in Tab.entries.indices) tab = Tab.entries[t]
