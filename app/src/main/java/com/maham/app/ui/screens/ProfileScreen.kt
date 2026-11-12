@@ -103,7 +103,7 @@ fun ProfileScreen(
 
     LazyColumn(
         modifier,
-        contentPadding = PaddingValues(16.dp, 12.dp, 16.dp, 96.dp),
+        contentPadding = PaddingValues(16.dp, 12.dp, 16.dp, 24.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // Navy hero panel: the design's signature ground, with one gold number.

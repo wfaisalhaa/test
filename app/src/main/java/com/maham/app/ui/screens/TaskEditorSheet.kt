@@ -18,6 +18,13 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.AccessTime
@@ -95,9 +102,15 @@ fun TaskEditorSheet(
     var showDate by remember { mutableStateOf(false) }
     var showTime by remember { mutableStateOf(false) }
 
+    // Dismiss the soft keyboard whenever the user taps anything other than a text field.
+    val focusManager = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    val hideKeyboard = { focusManager.clearFocus(); keyboard?.hide(); Unit }
+
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = Ng.tokens.panel) {
         Column(
             Modifier
+                .pointerInput(Unit) { detectTapGestures(onTap = { hideKeyboard() }) }
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp)
                 .navigationBarsPadding()
@@ -111,7 +124,7 @@ fun TaskEditorSheet(
                     modifier = Modifier.weight(1f)
                 )
                 if (task != null) {
-                    IconButton(onClick = { onDelete(task) }) {
+                    IconButton(onClick = { hideKeyboard(); onDelete(task) }) {
                         Icon(Icons.Outlined.Delete, stringResource(R.string.delete), tint = MaterialTheme.colorScheme.error)
                     }
                 }
@@ -124,7 +137,9 @@ fun TaskEditorSheet(
                 placeholder = { Text(stringResource(R.string.task_title_hint)) },
                 modifier = Modifier.fillMaxWidth(), singleLine = true,
                 shape = MaterialTheme.shapes.small,
-                leadingIcon = leading
+                leadingIcon = leading,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { hideKeyboard() })
             )
             OutlinedTextField(
                 value = note, onValueChange = { note = it },
@@ -146,7 +161,7 @@ fun TaskEditorSheet(
                             .clip(CircleShape)
                             .background(if (emoji == e) Ng.tokens.goldSoft else Ng.tokens.neutralSoft)
                             .border(1.dp, if (emoji == e) Ng.tokens.goldLine else Ng.tokens.line, CircleShape)
-                            .clickable { emoji = e },
+                            .clickable { hideKeyboard(); emoji = e },
                         contentAlignment = Alignment.Center
                     ) { Text(if (e.isEmpty()) "–" else e) }
                 }
@@ -155,7 +170,7 @@ fun TaskEditorSheet(
             // Date & time
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AssistChip(
-                    onClick = { showDate = true },
+                    onClick = { hideKeyboard(); showDate = true },
                     label = {
                         Text(
                             if (hasDate) LocalDate.ofEpochDay(dueDay).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
@@ -165,7 +180,7 @@ fun TaskEditorSheet(
                     leadingIcon = { Icon(Icons.Outlined.CalendarToday, null, Modifier.size(18.dp)) }
                 )
                 AssistChip(
-                    onClick = { showTime = true },
+                    onClick = { hideKeyboard(); showTime = true },
                     enabled = hasDate,
                     label = {
                         Text(dueMinute?.let { String.format(Locale.US, "%02d:%02d", it / 60, it % 60) }
@@ -178,9 +193,9 @@ fun TaskEditorSheet(
             // Category
             Label(R.string.task_category)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CategoryChip(R.string.filter_personal, category == Category.PERSONAL) { category = Category.PERSONAL }
-                CategoryChip(R.string.filter_work, category == Category.WORK) { category = Category.WORK }
-                CategoryChip(R.string.filter_list, category == Category.LIST) { category = Category.LIST }
+                CategoryChip(R.string.filter_personal, category == Category.PERSONAL) { hideKeyboard(); category = Category.PERSONAL }
+                CategoryChip(R.string.filter_work, category == Category.WORK) { hideKeyboard(); category = Category.WORK }
+                CategoryChip(R.string.filter_list, category == Category.LIST) { hideKeyboard(); category = Category.LIST }
             }
 
             // Color
@@ -198,7 +213,7 @@ fun TaskEditorSheet(
                                 color = if (color == c) Ng.tokens.ink else Color.Transparent,
                                 shape = CircleShape
                             )
-                            .clickable { color = c },
+                            .clickable { hideKeyboard(); color = c },
                         contentAlignment = Alignment.Center
                     ) {
                         if (color == c) Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(16.dp))
@@ -206,13 +221,14 @@ fun TaskEditorSheet(
                 }
             }
 
-            ToggleRow(R.string.task_reminder, reminder, enabled = hasDate && dueMinute != null) { reminder = it }
-            ToggleRow(R.string.task_important, important) { important = it }
+            ToggleRow(R.string.task_reminder, reminder, enabled = hasDate && dueMinute != null) { hideKeyboard(); reminder = it }
+            ToggleRow(R.string.task_important, important) { hideKeyboard(); important = it }
 
             Spacer(Modifier.height(4.dp))
             Button(
                 onClick = {
                     if (title.isBlank()) return@Button
+                    hideKeyboard()
                     onSave(
                         (task ?: Task(title = "")).copy(
                             title = title.trim(),
